@@ -104,15 +104,4 @@ curl localhost:3004/productos/123e4567-e89b-12d3-a456-426614174000
 }
 ```
 
-Nota sobre `sumaAseguradaMaxima`: es `numeric(14,2)` en Postgres y viaja como
-**string** para no perder precisión. El consumidor la convierte (en el monolito,
-`cotizacion.service.ts` ya hacía `parseFloat`).
-
-### `GET /ramos`
-
-Ramos de seguro soportados.
-
-| | |
-|---|---|
-| Body | — |
-| `200` | `["VIDA","SALUD","AUTOS","HOGAR","DESEMPLEO"]` |
+Es necesario realizar la base de datos en Docker para poder realizar las pruebas de los ASRs. 
