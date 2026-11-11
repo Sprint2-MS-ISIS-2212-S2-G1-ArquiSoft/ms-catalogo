@@ -1,0 +1,43 @@
+# Solo para desarrollo local. El despliegue real (docker-compose por nodo EC2)
+# vive en el repositorio paraguas.
+services:
+  catalogo:
+    build: .
+    container_name: catalogo
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: catalogo
+      DB_PASSWORD: catalogo
+      DB_NAME: catalogo
+      DB_LOGGING: "false"
+    ports:
+      - "3004:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: catalogo-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: catalogo
+      POSTGRES_USER: catalogo
+      POSTGRES_PASSWORD: catalogo
+    ports:
+      - "5434:5432"
+    volumes:
+      - catalogo_postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U catalogo -d catalogo"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  catalogo_postgres_data:
